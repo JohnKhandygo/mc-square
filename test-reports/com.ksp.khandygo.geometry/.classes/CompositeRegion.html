@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+    <title>Coverage Report :: CompositeRegion</title>
+    <style type="text/css">
+    @import "../../.css/coverage.css";
+
+    </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.ksp.khandygo.geometry</a> ]
+    </div>
+
+    <h1>Coverage Summary for Class: CompositeRegion (com.ksp.khandygo.geometry)</h1>
+
+    <table class="coverageStats">
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
+">
+                Class, %
+            </th>
+            <th class="coverageStat
+">
+                Method, %
+            </th>
+            <th class="coverageStat
+">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">CompositeRegion</td>
+            <td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+            </td>
+            <td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+            </td>
+            <td class="coverageStat">
+  <span class="percent">
+    96.6%
+  </span>
+  <span class="absValue">
+    (28/ 29)
+  </span>
+            </td>
+        </tr>
+
+    </table>
+
+    <br/>
+    <br/>
+
+
+    <div class="sourceCode"><i>1</i>&nbsp;package com.ksp.khandygo.geometry;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.google.common.collect.Range;
+        <i>4</i>&nbsp;import java.util.List;
+        <i>5</i>&nbsp;
+        <i>6</i>&nbsp;public class CompositeRegion&lt;T extends Region&gt; implements Region {
+        <i>7</i>&nbsp; protected final List&lt;T&gt; regions;
+        <i>8</i>&nbsp;
+        <b class="fc"><i>9</i>&nbsp; public CompositeRegion(final List&lt;T&gt; regions) {</b>
+        <b class="fc"><i>10</i>&nbsp; this.regions = regions;</b>
+        <b class="fc"><i>11</i>&nbsp; }</b>
+        <i>12</i>&nbsp;
+        <i>13</i>&nbsp; @Override
+        <i>14</i>&nbsp; public boolean contains(final Point point) {
+        <b class="fc"><i>15</i>&nbsp; for (final T region : regions)</b>
+        <b class="fc"><i>16</i>&nbsp; if (region.contains(point)) return true;</b>
+        <b class="fc"><i>17</i>&nbsp; return false;</b>
+        <i>18</i>&nbsp; //return regions.stream().anyMatch(r -&gt; r.contains(point));
+        <i>19</i>&nbsp; }
+        <i>20</i>&nbsp;
+        <i>21</i>&nbsp; @Override
+        <i>22</i>&nbsp; public boolean contains(final Region region) {
+        <b class="nc"><i>23</i>&nbsp; return regions.stream().anyMatch(r -&gt; r.contains(region));</b>
+        <i>24</i>&nbsp; }
+        <i>25</i>&nbsp;
+        <i>26</i>&nbsp; @Override
+        <i>27</i>&nbsp; public Range&lt;Double&gt; xprojection() {
+        <b class="fc"><i>28</i>&nbsp; final double minx = regions.stream()</b>
+        <b class="fc"><i>29</i>&nbsp; .map(Region::xprojection)</b>
+        <b class="fc"><i>30</i>&nbsp; .mapToDouble(Range::lowerEndpoint)</b>
+        <b class="fc"><i>31</i>&nbsp; .min()</b>
+        <b class="fc"><i>32</i>&nbsp; .getAsDouble();</b>
+        <b class="fc"><i>33</i>&nbsp; final double maxx = regions.stream()</b>
+        <b class="fc"><i>34</i>&nbsp; .map(Region::xprojection)</b>
+        <b class="fc"><i>35</i>&nbsp; .mapToDouble(Range::upperEndpoint)</b>
+        <b class="fc"><i>36</i>&nbsp; .max()</b>
+        <b class="fc"><i>37</i>&nbsp; .getAsDouble();</b>
+        <b class="fc"><i>38</i>&nbsp; return Range.closed(minx, maxx);</b>
+        <i>39</i>&nbsp; }
+        <i>40</i>&nbsp;
+        <i>41</i>&nbsp; @Override
+        <i>42</i>&nbsp; public Range&lt;Double&gt; yprojection() {
+        <b class="fc"><i>43</i>&nbsp; final double miny = regions.stream()</b>
+        <b class="fc"><i>44</i>&nbsp; .map(Region::yprojection)</b>
+        <b class="fc"><i>45</i>&nbsp; .mapToDouble(Range::lowerEndpoint)</b>
+        <b class="fc"><i>46</i>&nbsp; .min()</b>
+        <b class="fc"><i>47</i>&nbsp; .getAsDouble();</b>
+        <b class="fc"><i>48</i>&nbsp; final double maxy = regions.stream()</b>
+        <b class="fc"><i>49</i>&nbsp; .map(Region::yprojection)</b>
+        <b class="fc"><i>50</i>&nbsp; .mapToDouble(Range::upperEndpoint)</b>
+        <b class="fc"><i>51</i>&nbsp; .max()</b>
+        <b class="fc"><i>52</i>&nbsp; .getAsDouble();</b>
+        <b class="fc"><i>53</i>&nbsp; return Range.closed(miny, maxy);</b>
+        <i>54</i>&nbsp; }
+        <i>55</i>&nbsp;}
+    </div>
+</div>
+
+<div class="footer">
+
+    <div style="float:right;">generated on 2016-03-21 20:22</div>
+</div>
+</body>
+</html>

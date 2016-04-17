@@ -1,0 +1,67 @@
+@startuml
+
+package "java.io" {
+  interface Serializable {
+  }
+}
+
+package "geometry" {
+  package "core" {
+    interface HasSquare {
+      + square() : double
+    }
+    interface Region extends Serializable {
+      + contains(p : Point) : boolean
+      + contains(r : Region) : boolean
+      + xprojection() : Range<Double>
+      + yprojection() : Range<Double>
+    }
+    interface Figure extends HasSquare, Region {
+    }
+    class Point extends Serializable {
+      - x : double
+      - y : double
+      + Point(x : double, y : double) : Point
+      + x() : double
+      + y() : double
+    }
+  }
+
+  class Circle implements Figure {
+    - centre : Point
+    - radius2 : double
+    + centre() : Point
+    + radius() : double
+    + intersectsWith(c : Circle) : boolean
+  }
+
+  class Distance {
+    + {static} distanceBetween(p1 : Point, p2 : Point) : double
+    ~ {static} distance2Between(p1 : Point, p2 : Point) : double
+  }
+
+  class Rectangle implements Figure {
+    - ll : Point
+    - ur : Point
+    + Rectangle(ll : Point, ur : Point) : Rectangle
+    + lowerLeft() : Point
+    + width() : double
+    + height() : double
+    + {static} of (ll : Point, w : double, h : double) : Rectangle
+  }
+
+  class SingleRectangleCoverBuilder {
+    + <T extends Region> cover(rs : List<T>) : Rectangle
+    + cover(r : Region) : Rectangle
+  }
+  SingleRectangleCoverBuilder ..> Region : uses
+
+
+  class CompositeRegion<T extends Region> implements Region {
+      # regions : List<T>
+      + CompositeRegion(rs : List<T>) : CompositeRegion<T>
+    }
+    CompositeRegion o-up- Region
+}
+
+@enduml

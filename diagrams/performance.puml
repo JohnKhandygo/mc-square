@@ -1,0 +1,90 @@
+@startuml
+
+'package "com.fasterxml.jackson.databind" {
+'  class ObjectMapper {
+'    + readTree(f : File) : JsonNode
+'  }
+'
+'  class JsonNode {
+'    + isArray() : boolean
+'    + get(p : String) : JsonNode
+'    + asDouble() : double
+'  }
+'}
+
+package "geometry" {
+  class Circle
+  class CompositeRegion
+}
+
+'package "processing.mpi" {
+'  class MPIMCCoordinator
+'  class MPIMCEstimator
+'}
+
+package "processing.parallel" {
+  class ParallelMCEstimator
+}
+
+package "processing.sequential" {
+  class SequentialMCEstimator
+}
+
+package "performance" {
+  package "utils" {
+    class InputProvider {
+      - baseDir : File
+      - InputProvider(bd : File) : InputProvider
+      + provide() : List<Region>
+      - parseRegion(if : File) : CompositeRegion
+      + {static} feededFrom(p : String) : InputProvider
+    }
+'    InputProvider ..> ObjectMapper : uses
+'    InputProvider ..> JsonNode : uses
+    InputProvider ..> Circle : uses
+    InputProvider ..> CompositeRegion : uses
+
+    class SetupParametersFormatter {
+      + {static} print(p : String, t : int, s : int, pl : int) : void
+      + {static} print(p : String, t : int, s : int) : void
+    }
+
+    class StatisticsCollector {
+      - measures : List<Long>
+      - StatisticsCollector(ms : List<Long>) : StatisticsCollector
+      + add(m : long) : void
+      + print() : void
+      + {static} newOne() : StatisticsCollector
+    }
+  }
+
+  class MPIMCRunner {
+    + {static} main(args : String[]) : void
+    - {static} setUpAndShare(a : String[], cr : int, tr : int, sf : int[], ...) : void
+    - {static} doEstimation(cr : int, t : int, tr : int, r : Region, sf : int[]) : void
+  }
+  MPIMCRunner ..> InputProvider : uses
+  MPIMCRunner ..> SetupParametersFormatter : uses
+'  MPIMCRunner ..> MPI : uses
+'  MPIMCRunner ..> Intracom : uses
+
+  class ParallelMCEstimatorRunner {
+    - {static} MEASURES : ParallelMCEstimatorRunner = ParallelMCEstimatorRunner::newOne
+    + {static} main(args : String[]) : void
+  }
+  ParallelMCEstimatorRunner ..> InputProvider : uses
+  ParallelMCEstimatorRunner ..> SetupParametersFormatter : uses
+  ParallelMCEstimatorRunner ..> StatisticsCollector : uses
+  ParallelMCEstimatorRunner .up.> ParallelMCEstimator : uses
+
+  class SequentialMCEstimatorRunner {
+    - {static} MEASURES : ParallelMCEstimatorRunner = ParallelMCEstimatorRunner::newOne
+    + {static} main(args : String[]) : void
+  }
+  SequentialMCEstimatorRunner ..> InputProvider : uses
+  SequentialMCEstimatorRunner ..> SetupParametersFormatter : uses
+  SequentialMCEstimatorRunner ..> StatisticsCollector : uses
+  SequentialMCEstimatorRunner .up.> SequentialMCEstimator : uses
+}
+
+@enduml

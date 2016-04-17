@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+    <title>Coverage Report :: Rectangle</title>
+    <style type="text/css">
+    @import "../../.css/coverage.css";
+
+    </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.ksp.khandygo.geometry</a> ]
+    </div>
+
+    <h1>Coverage Summary for Class: Rectangle (com.ksp.khandygo.geometry)</h1>
+
+    <table class="coverageStats">
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
+">
+                Class, %
+            </th>
+            <th class="coverageStat
+">
+                Method, %
+            </th>
+            <th class="coverageStat
+">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">Rectangle</td>
+            <td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+            </td>
+            <td class="coverageStat">
+  <span class="percent">
+    78.6%
+  </span>
+  <span class="absValue">
+    (11/ 14)
+  </span>
+            </td>
+            <td class="coverageStat">
+  <span class="percent">
+    73.7%
+  </span>
+  <span class="absValue">
+    (14/ 19)
+  </span>
+            </td>
+        </tr>
+
+    </table>
+
+    <br/>
+    <br/>
+
+
+    <div class="sourceCode"><i>1</i>&nbsp;package com.ksp.khandygo.geometry;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.google.common.base.Preconditions;
+        <i>4</i>&nbsp;import com.google.common.collect.Range;
+        <i>5</i>&nbsp;import lombok.EqualsAndHashCode;
+        <i>6</i>&nbsp;import lombok.ToString;
+        <i>7</i>&nbsp;
+        <b class="nc"><i>8</i>&nbsp;@ToString</b>
+        <b class="fc"><i>9</i>&nbsp;@EqualsAndHashCode</b>
+        <i>10</i>&nbsp;public class Rectangle implements Figure {
+        <i>11</i>&nbsp;
+        <i>12</i>&nbsp; private final Point ll;
+        <i>13</i>&nbsp;
+        <i>14</i>&nbsp; private final Point ur;
+        <i>15</i>&nbsp;
+        <b class="fc"><i>16</i>&nbsp; Rectangle(final Point ll, final Point ur) {</b>
+        <b class="fc"><i>17</i>&nbsp; this.ll = ll;</b>
+        <b class="fc"><i>18</i>&nbsp; this.ur = ur;</b>
+        <b class="fc"><i>19</i>&nbsp; }</b>
+        <i>20</i>&nbsp;
+        <i>21</i>&nbsp; public Point lowerLeft() {
+        <b class="fc"><i>22</i>&nbsp; return ll;</b>
+        <i>23</i>&nbsp; }
+        <i>24</i>&nbsp;
+        <i>25</i>&nbsp; public Point upperRight() {
+        <b class="fc"><i>26</i>&nbsp; return ur;</b>
+        <i>27</i>&nbsp; }
+        <i>28</i>&nbsp;
+        <i>29</i>&nbsp; @Override
+        <b class="fc"><i>30</i>&nbsp; public double square() { return width() * height(); }</b>
+        <i>31</i>&nbsp;
+        <i>32</i>&nbsp; public double width() {
+        <b class="fc"><i>33</i>&nbsp; return ur.x() - ll.x();</b>
+        <i>34</i>&nbsp; }
+        <i>35</i>&nbsp;
+        <i>36</i>&nbsp; public double height() {
+        <b class="fc"><i>37</i>&nbsp; return ur.y() - ll.y();</b>
+        <i>38</i>&nbsp; }
+        <i>39</i>&nbsp;
+        <i>40</i>&nbsp; @Override
+        <i>41</i>&nbsp; public boolean contains(final Point p) {
+        <b class="fc"><i>42</i>&nbsp; return xprojection().contains(p.x()) &amp;&amp;
+            yprojection().contains(p.y());</b>
+        <i>43</i>&nbsp; }
+        <i>44</i>&nbsp;
+        <i>45</i>&nbsp; @Override
+        <i>46</i>&nbsp; public boolean contains(final Region region) {
+        <b class="nc"><i>47</i>&nbsp; throw new UnsupportedOperationException();</b>
+        <i>48</i>&nbsp; }
+        <i>49</i>&nbsp;
+        <i>50</i>&nbsp; @Override
+        <i>51</i>&nbsp; public Range&lt;Double&gt; xprojection() {
+        <b class="fc"><i>52</i>&nbsp; return Range.closed(ll.x(), ur.x());</b>
+        <i>53</i>&nbsp; }
+        <i>54</i>&nbsp;
+        <i>55</i>&nbsp; @Override
+        <i>56</i>&nbsp; public Range&lt;Double&gt; yprojection() {
+        <b class="fc"><i>57</i>&nbsp; return Range.closed(ll.y(), ur.y());</b>
+        <i>58</i>&nbsp; }
+        <i>59</i>&nbsp;
+        <i>60</i>&nbsp; public static Rectangle of(final Point ll, final double w, final double h) {
+        <b class="fc"><i>61</i>&nbsp; return new Rectangle(ll, new Point(ll.x() + w, ll.y() +
+            h));</b>
+        <i>62</i>&nbsp; }
+        <i>63</i>&nbsp;
+        <i>64</i>&nbsp; public static Rectangle of(final Point ll, final Point ur) {
+        <b class="nc"><i>65</i>&nbsp; Preconditions.checkState(ll.x() &lt; ur.x());</b>
+        <b class="nc"><i>66</i>&nbsp; Preconditions.checkState(ll.y() &lt; ur.y());</b>
+        <b class="nc"><i>67</i>&nbsp; return new Rectangle(ll, ur);</b>
+        <i>68</i>&nbsp; }
+        <i>69</i>&nbsp;}
+    </div>
+</div>
+
+<div class="footer">
+
+    <div style="float:right;">generated on 2016-03-21 20:22</div>
+</div>
+</body>
+</html>

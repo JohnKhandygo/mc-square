@@ -1,0 +1,108 @@
+@startuml
+
+'package "java.util" {
+'  class Random {
+'    + nextDouble() : double
+'  }
+'}
+'  package "java.util.concurrent" {
+'    package "atomic" {
+'      class AtomicInteger {
+'       + AtomicInteger(i : int) : AtomicInteger
+'       + addAndGet(i : int) : int
+'      }
+'    }
+'
+'    class CountDownLatch {
+'      + CountDownLatch(i : int) : CountDownLatch
+'      + countDown() : void
+'      + await() : void
+'    }
+'
+'    class CompletableFuture<T> {
+'      + supplyAsync(s : Supplier<T>, e : ExecutorService)
+'      + thenAcceptAsync(s : Consumer<? extends T>) : CompletableFuture<Void>
+'    }
+'  }
+
+'package "com.google.common.base" {
+'  class Stopwatch {
+'    + elapsed(tu : TimeUnit) : long
+'    + {static} createStarted() : Stopwatch
+'  }
+'}
+
+'package "mpi" {
+'  class MPI {
+'    + {static} COMM_WORLD : Intracom
+'  }
+
+'  class Intracom {
+'    + Recv(b : Object, o : int, c : int, dt : DataType, s : int, t : int) : Status
+'    + Isend(b : Object, o : int, c : int, dt : DataType, d : int, t : int) : Request
+'  }
+'}
+
+package "geometry" {
+  class SingleRectangleCoverBuilder {
+  }
+}
+
+'package "performance.utils" {
+'  class StatisticsCollector
+'}
+
+package "processing" {
+  interface MCEstimator {
+    + estimate(r : Region, s : int) : double
+    + doNProbes(r : Region, s : int) : int
+  }
+  MCEstimator .left.> SingleRectangleCoverBuilder : uses
+  MCEstimator .right.> Uniform2DGenerator : uses
+
+  interface Uniform2DGenerator {
+    + next() : Point
+    ~ {static} in(r : Rectangle) : Point
+  }
+'  Uniform2DGenerator .left.> Random : uses
+
+  package "processing.sequential" {
+    class SequentialMCEstimator implements MCEstimator
+  }
+
+  package "processing.parallel" {
+    class ParallelMCEstimator implements MCEstimator {
+      - executor : ExecutorService
+      - parallelismLevel : int
+      + ParallelMCEstimator(e : ExecutorService, pl : int) : ParallelMCEstimator
+    }
+'    ParallelMCEstimator ..> AtomicInteger : uses
+'    ParallelMCEstimator ..> CountDownLatch : uses
+'    ParallelMCEstimator ..> CompletableFuture : uses
+  }
+
+  package "processing.mpi" {
+    class MPIMCCoordinator implements MCEstimator {
+      - {static} MEASURES : StatisticsCollector = StatisticsCollector::newOne
+      - {static} FIRST_RUN : boolean = true
+      - thisRank : int
+      - worldSize : int
+      - tag : int
+      + MPIMCCoordinator(tr : int, ws : int, t : int) : MPIMCCoordinator
+    }
+'    MPIMCCoordinator ..> StatisticsCollector : uses
+'    MPIMCCoordinator ..> Stopwatch : uses
+'    MPIMCCoordinator ..> MPI : uses
+'    MPIMCCoordinator ..> Intracom : uses
+
+    class MPIMCEstimator implements MCEstimator {
+      - coordinatorRank : int
+      - tag : int
+      + MPIMCEstimator(cr : int, t : int) : MPIMCEstimator
+    }
+'    MPIMCEstimator ..> MPI : uses
+'    MPIMCEstimator ..> Intracom : uses
+  }
+}
+
+@enduml

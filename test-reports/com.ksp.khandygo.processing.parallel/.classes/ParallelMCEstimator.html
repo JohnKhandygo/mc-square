@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+    <title>Coverage Report :: ParallelMCEstimator</title>
+    <style type="text/css">
+    @import "../../.css/coverage.css";
+
+    </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+    <div class="breadCrumbs">
+        [ <a href="../../index.html">all classes</a> ]
+        [ <a href="../index.html">com.ksp.khandygo.processing.parallel</a> ]
+    </div>
+
+    <h1>Coverage Summary for Class: ParallelMCEstimator (com.ksp.khandygo.processing.parallel)</h1>
+
+    <table class="coverageStats">
+        <tr>
+            <th class="name">Class</th>
+            <th class="coverageStat
+">
+                Class, %
+            </th>
+            <th class="coverageStat
+">
+                Method, %
+            </th>
+            <th class="coverageStat
+">
+                Line, %
+            </th>
+        </tr>
+        <tr>
+            <td class="name">ParallelMCEstimator</td>
+            <td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+            </td>
+            <td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+            </td>
+            <td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (14/ 16)
+  </span>
+            </td>
+        </tr>
+
+    </table>
+
+    <br/>
+    <br/>
+
+
+    <div class="sourceCode"><i>1</i>&nbsp;package com.ksp.khandygo.processing.parallel;
+        <i>2</i>&nbsp;
+        <i>3</i>&nbsp;import com.ksp.khandygo.geometry.core.Region;
+        <i>4</i>&nbsp;import com.ksp.khandygo.processing.MCEstimator;
+        <i>5</i>&nbsp;import java.util.concurrent.CompletableFuture;
+        <i>6</i>&nbsp;import java.util.concurrent.CountDownLatch;
+        <i>7</i>&nbsp;import java.util.concurrent.ExecutorService;
+        <i>8</i>&nbsp;import java.util.concurrent.atomic.AtomicInteger;
+        <i>9</i>&nbsp;
+        <i>10</i>&nbsp;public class ParallelMCEstimator implements MCEstimator {
+        <i>11</i>&nbsp;
+        <i>12</i>&nbsp; private final ExecutorService executor;
+        <i>13</i>&nbsp;
+        <i>14</i>&nbsp; private final int parallelismLevel;
+        <i>15</i>&nbsp;
+        <b class="fc"><i>16</i>&nbsp; public ParallelMCEstimator(final ExecutorService executor,
+            final int parallelismLevel) {</b>
+        <b class="fc"><i>17</i>&nbsp; this.executor = executor;</b>
+        <b class="fc"><i>18</i>&nbsp; this.parallelismLevel = parallelismLevel;</b>
+        <b class="fc"><i>19</i>&nbsp; }</b>
+        <i>20</i>&nbsp;
+        <i>21</i>&nbsp; @Override
+        <i>22</i>&nbsp; public double estimate(final Region regionTiEstimate, final int sampleSize)
+        {
+        <b class="fc"><i>23</i>&nbsp; final AtomicInteger successfulProbes = new
+            AtomicInteger(0);</b>
+        <b class="fc"><i>24</i>&nbsp; final CountDownLatch latch = new
+            CountDownLatch(parallelismLevel);</b>
+        <b class="fc"><i>25</i>&nbsp; for (int i = 0; i &lt; parallelismLevel; ++i) {</b>
+        <b class="fc"><i>26</i>&nbsp; CompletableFuture</b>
+        <b class="fc"><i>27</i>&nbsp; .supplyAsync(() -&gt; doNProbes(regionTiEstimate, sampleSize /
+            parallelismLevel), executor)</b>
+        <b class="fc"><i>28</i>&nbsp; .thenAcceptAsync(successfulProbes::addAndGet)</b>
+        <b class="fc"><i>29</i>&nbsp; .thenAcceptAsync(v -&gt; latch.countDown());</b>
+        <i>30</i>&nbsp; }
+        <i>31</i>&nbsp; try {
+        <b class="fc"><i>32</i>&nbsp; latch.await();</b>
+        <b class="nc"><i>33</i>&nbsp; } catch (InterruptedException e) {</b>
+        <b class="nc"><i>34</i>&nbsp; e.printStackTrace();</b>
+        <b class="fc"><i>35</i>&nbsp; }</b>
+        <b class="fc"><i>36</i>&nbsp; return ((double) successfulProbes.get()) / sampleSize;</b>
+        <i>37</i>&nbsp; }
+        <i>38</i>&nbsp;}
+    </div>
+</div>
+
+<div class="footer">
+
+    <div style="float:right;">generated on 2016-03-21 20:22</div>
+</div>
+</body>
+</html>
