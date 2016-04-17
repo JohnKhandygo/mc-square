@@ -1,8 +1,11 @@
 package com.ksp.khandygo.geometry.core;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import java.io.Serializable;
-import java.util.Objects;
 
+@EqualsAndHashCode
+@ToString
 public class Point implements Serializable {
 
   private final double x;
@@ -20,31 +23,5 @@ public class Point implements Serializable {
 
   public double y() {
     return y;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(x, y);
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Point)) {
-      return false;
-    }
-    final Point point = (Point) o;
-    return Double.compare(point.x, x) == 0 &&
-        Double.compare(point.y, y) == 0;
-  }
-
-  @Override
-  public String toString() {
-    return "Point{" +
-        "x=" + x +
-        ", y=" + y +
-        '}';
   }
 }
